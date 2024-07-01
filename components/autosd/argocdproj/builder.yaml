@@ -1,7 +1,7 @@
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
-  name: autosd-dev
+  name: autosd-container
   #namespace: "{{ namespace }}-build"
   annotations:
     description: base image for autosd development
