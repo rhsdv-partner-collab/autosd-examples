@@ -10,6 +10,8 @@ spec:
   destinations:
     - namespace: openshift
       server: "*"
+    - namespace: autosd
+      server: "*"
     - namespace: autosd-build
       server: "*"
   sourceRepos:

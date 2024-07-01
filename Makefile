@@ -9,7 +9,10 @@ namespace:
 
 .PHONY: bootstrap
 bootstrap:
-	oc apply -f bootstrap -n ${NAMESPACE}-build
+	oc apply -f bootstrap/argocd.yaml -n ${NAMESPACE}-build
+	oc apply -f bootstrap/project.yaml -n ${NAMESPACE}-build
+	oc apply -f bootstrap/apps.yaml -n ${NAMESPACE}-build
+	oc apply -f bootstrap/role_bindings.yaml
 
 .PHONY: cleanup
 cleanup:

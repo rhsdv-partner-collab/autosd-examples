@@ -15,6 +15,20 @@ subjects:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+  name: autosd-cluster-admin-gitops-sa
+  namespace: autosd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: argocd-argocd-application-controller
+    namespace: autosd-build
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
   name: openshift-cluster-admin-gitops-sa
   namespace: openshift
 roleRef:

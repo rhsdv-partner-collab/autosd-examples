@@ -20,6 +20,6 @@ spec:
     to:
       kind: ImageStreamTag
       name: autosd-dev:1.0.0
-      namespace: openshift
+      #namespace: openshift
   triggers:
     - type: ConfigChange
