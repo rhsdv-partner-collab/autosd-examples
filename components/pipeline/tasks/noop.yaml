@@ -12,7 +12,8 @@ spec:
     #  type: string
   steps:
     - name: noop
-      image: registry.redhat.io/rhel8/buildah:8.10
+      #image: registry.redhat.io/rhel8/buildah:8.10
+      image: registry.redhat.io/ubi9/s2i-base:1-519.1719561329
       script: |
         #!/usr/bin/env bash
 
