@@ -1,8 +1,28 @@
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
+  name: "autosd-build"
+spec:
+  project: "autosd-build"
+  revisionHistoryLimit: 3
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    directory:
+      recurse: true
+    path: components/pipeline
+    repoURL: https://github.com/rhsdv-partner-exchange/autosd-examples
+    targetRevision: develop
+  destination:
+    namespace: "autosd-build"
+    server: https://kubernetes.default.svc
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
   name: "autosd-container"
-  #namespace: "{{ gitops_namespace }}"
 spec:
   project: "autosd-build"
   revisionHistoryLimit: 3
