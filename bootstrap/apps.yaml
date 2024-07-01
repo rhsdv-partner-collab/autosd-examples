@@ -13,7 +13,7 @@ spec:
   source:
     directory:
       recurse: false
-    path: components/autosd-base
+    path: components/autosd/argocdproj
     repoURL: https://github.com/rhsdv-partner-exchange/autosd-examples
     targetRevision: develop
   destination:

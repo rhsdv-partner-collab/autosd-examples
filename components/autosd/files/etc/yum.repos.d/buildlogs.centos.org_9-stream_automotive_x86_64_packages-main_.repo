@@ -1,0 +1,5 @@
+[buildlogs.centos.org_9-stream_automotive_x86_64_packages-main_]
+name=created by dnf config-manager from https://buildlogs.centos.org/9-stream/automotive/x86_64/packages-main/
+baseurl=https://buildlogs.centos.org/9-stream/automotive/x86_64/packages-main/
+enabled=1
+gpgcheck=0
