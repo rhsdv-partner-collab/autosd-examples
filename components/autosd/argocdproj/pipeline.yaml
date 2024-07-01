@@ -60,20 +60,20 @@ spec:
         - name: output
           workspace: workspace
 
-    - name: debug
-      taskRef:
-        kind: Task
-        name: noop
-      params:
-        - name: GIT_REVISION
-          value: $(params.GIT_REVISION)
-        - name: GIT_BRANCH_REF
-          value: $(params.GIT_BRANCH_REF)
-      runAfter:
-        - git-clone
-      workspaces:
-        - name: source
-          workspace: workspace
+    #- name: debug
+    #  taskRef:
+    #    kind: Task
+    #    name: noop
+    #  params:
+    #    - name: GIT_REVISION
+    #      value: $(params.GIT_REVISION)
+    #    - name: GIT_BRANCH_REF
+    #      value: $(params.GIT_BRANCH_REF)
+    #  runAfter:
+    #    - git-clone
+    #  workspaces:
+    #    - name: source
+    #      workspace: workspace
 
     - name: build
       params:
