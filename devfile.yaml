@@ -1,0 +1,19 @@
+schemaVersion: 2.2.0
+metadata:
+  name: autosd-examples
+projects:
+  - name: autosd-examples
+    git:
+      remotes:
+        origin: "https://github.com/rhsdv-partner-exchange/autosd-examples"
+      checkoutFrom:
+        revision: develop
+components:
+  - name: autosd-examples
+    container:
+      image: registry.redhat.io/devspaces/udi-rhel8:3.14
+      memoryLimit: '4Gi'
+      memoryRequest: '2Gi'
+      cpuLimit: '2'
+      cpuRequest: '1'
+      mountSources: true

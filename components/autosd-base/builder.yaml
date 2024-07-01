@@ -1,0 +1,25 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: autosd-dev
+  #namespace: "{{ namespace }}-build"
+  annotations:
+    description: base image for autosd development
+spec:
+  source:
+    git:
+      ref: develop
+      uri: "https://github.com/rhsdv-partner-exchange/autosd-examples"
+    contextDir: components/autosd-base
+    type: Git
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: autosd-dev:1.0.0
+      namespace: openshift
+  triggers:
+    - type: ConfigChange

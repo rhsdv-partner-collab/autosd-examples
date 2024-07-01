@@ -1,0 +1,10 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: autosd-dev
+  namespace: openshift
+  annotations:
+    description: base image for autosd development
+spec:
+  lookupPolicy:
+    local: false

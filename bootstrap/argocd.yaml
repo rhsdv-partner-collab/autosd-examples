@@ -1,0 +1,98 @@
+apiVersion: argoproj.io/v1beta1
+kind: ArgoCD
+metadata:
+  finalizers:
+  - argoproj.io/finalizer
+  labels:
+    app: argocd
+  name: argocd
+spec:
+  applicationInstanceLabelKey: rht-gitops.com/janus-argocd
+  applicationSet:
+    webhookServer:
+      ingress:
+        enabled: false
+      route:
+        enabled: false
+  controller:
+    appSync: 30s
+    processors: {}
+    sharding: {}
+  extraConfig:
+    resource.customizations.health.PersistentVolumeClaim: |
+      hs = {}
+      if obj.status ~= nil then
+        if obj.status.phase ~= nil then
+          if obj.status.phase == "Pending" then
+            hs.status = "Healthy"
+            hs.message = obj.status.phase
+            return hs
+          end
+          if obj.status.phase == "Bound" then
+            hs.status = "Healthy"
+            hs.message = obj.status.phase
+            return hs
+          end
+        end
+      end
+      hs.status = "Progressing"
+      hs.message = "Waiting for PVC"
+      return hs
+  grafana:
+    enabled: false
+    ingress:
+      enabled: false
+    route:
+      enabled: false
+  ha:
+    enabled: false
+  initialSSHKnownHosts: {}
+  monitoring:
+    enabled: false
+  notifications:
+    enabled: true
+  prometheus:
+    enabled: false
+    ingress:
+      enabled: false
+    route:
+      enabled: false
+  rbac:
+    defaultPolicy: role:admin
+    policy: |
+      g, system:cluster-admins, role:admin
+    scopes: '[groups]'
+  redis: {}
+  repo: {}
+  resourceExclusions: |
+    - apiGroups:
+        - tekton.dev
+      clusters:
+        - '*'
+      kinds:
+        - TaskRun
+        - PipelineRun
+  resourceHealthChecks:
+  - check: |
+      hs = {}
+      hs.status = "Healthy"
+      return hs
+    group: networking.k8s.io
+    kind: Ingress
+  server:
+    autoscale:
+      enabled: false
+    grpc:
+      ingress:
+        enabled: false
+    ingress:
+      enabled: false
+    route:
+      enabled: true
+      tls:
+        termination: reencrypt
+    service:
+      type: ""
+  tls:
+    ca: {}
+  version: v2.4.11
