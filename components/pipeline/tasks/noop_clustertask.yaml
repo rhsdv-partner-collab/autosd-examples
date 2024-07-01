@@ -1,4 +1,4 @@
-kind: ClusterTask
+kind: Task
 apiVersion: tekton.dev/v1beta1
 metadata:
   name: noop
