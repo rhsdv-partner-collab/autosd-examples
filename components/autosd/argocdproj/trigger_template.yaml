@@ -1,0 +1,47 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: trigger-template-autosd-pipeline
+spec:
+  params:
+    - name: git-revision
+    - name: git-commit-message
+    - name: git-repo-url
+    - name: git-repo-name
+    - name: git-repo-cn
+    - name: git-branch-ref
+    - name: pusher-name
+    - name: pusher-email
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: osbuild-pipeline-
+      spec:
+        pipelineRef:
+          name: osbuild-pipeline
+        params:
+          #- name: APP_NAME
+          #  value: $(tt.params.git-repo-name)
+          - name: GIT_REPO
+            value: $(tt.params.git-repo-url)
+          - name: GIT_REPO_FULL_NAME
+            value: $(tt.params.git-repo-cn)
+          - name: GIT_REVISION
+            value: $(tt.params.git-revision)
+          - name: GIT_BRANCH_REF
+            value: $(tt.params.git-branch-ref)
+          - name: GIT_PUSHER_NAME
+            value: $(tt.params.pusher-name)
+          - name: GIT_PUSHER_EMAIL
+            value: $(tt.params.pusher-email)
+          #- name: GIT_COMMIT_MESSAGE
+          #  value: $(tt.params.git-commit-message)
+          - name: PATH_CONTEXT
+            value: "."
+        resources: []
+        workspaces:
+          - name: workspace
+            persistentVolumeClaim:
+              claimName: autosd-container-workspace
+          

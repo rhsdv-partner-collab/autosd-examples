@@ -1,0 +1,107 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: autosd-container-pipeline
+spec:
+  params:
+    #- name: APP_NAME
+    #  type: string
+    - name: GIT_REPO
+      type: string
+      default: "https://github.com/rhsdv-partner-exchange/autosd-examples"
+    - name: GIT_REPO_FULL_NAME
+      type: string
+    - name: GIT_REVISION
+      type: string
+      default: develop
+    - name: GIT_BRANCH_REF
+      type: string
+      default: "foo/bar/develop"
+    - name: GIT_PUSHER_NAME
+      type: string
+      default: "root"
+    - name: GIT_PUSHER_EMAIL
+      type: string
+      default: "root@example.com"
+    #- name: GIT_COMMIT_MESSAGE
+    #  type: string
+    #  default: "commit"
+    - name: PATH_CONTEXT
+      type: string
+      default: "."
+    #- name: IMAGE_STREAM
+    #  type: string
+    #- name: NAMESPACE
+    #  type: string
+  workspaces:
+    - name: workspace
+
+  tasks:
+    - name: git-clone
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.GIT_REPO)
+        - name: revision
+          value: $(params.GIT_REVISION)
+        - name: submodules
+          value: "true"
+        - name: subdirectory
+          value: ""
+        - name: depth
+          value: "1"
+        - name: deleteExisting
+          value: "true"
+        - name: sslVerify
+          value: "false"
+      workspaces:
+        - name: output
+          workspace: workspace
+
+    #- name: noop
+    #  taskRef:
+    #    kind: ClusterTask
+    #    name: noop
+    #  params:
+    #    - name: GIT_REVISION
+    #      value: $(params.GIT_REVISION)
+    #    - name: GIT_BRANCH_REF
+    #      value: $(params.GIT_BRANCH_REF)
+    #  runAfter:
+    #    - git-clone
+    #  workspaces:
+    #    - name: source
+    #      workspace: workspace
+
+    - name: build
+      params:
+        - name: IMAGE
+          value: autosd
+        - name: BUILDER_IMAGE
+          value: "registry.redhat.io/rhel8/buildah:8.10"
+        - name: STORAGE_DRIVER
+          value: vfs #overlay
+        - name: DOCKERFILE
+          value: ./Containerfile
+        - name: CONTEXT
+          value: components/autosd
+        - name: TLSVERIFY
+          value: 'true'
+        - name: FORMAT
+          value: oci
+        - name: BUILD_EXTRA_ARGS
+          value: '--cap-add SYS_ADMIN'
+        - name: PUSH_EXTRA_ARGS
+          value: ''
+        - name: SKIP_PUSH
+          value: 'false'
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: ClusterTask
+        name: buildah-1-9-0
+      workspaces:
+        - name: source
+          workspace: workspace
