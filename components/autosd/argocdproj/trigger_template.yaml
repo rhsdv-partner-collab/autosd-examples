@@ -1,7 +1,7 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
-  name: trigger-template-autosd-pipeline
+  name: trigger-template-autosd-container-pipeline
 spec:
   params:
     - name: git-revision
@@ -16,10 +16,10 @@ spec:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
-        generateName: osbuild-pipeline-
+        generateName: autosd-container-pipeline-
       spec:
         pipelineRef:
-          name: osbuild-pipeline
+          name: autosd-container-pipeline
         params:
           #- name: APP_NAME
           #  value: $(tt.params.git-repo-name)
