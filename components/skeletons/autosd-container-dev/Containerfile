@@ -1,0 +1,23 @@
+FROM quay.io/centos/centos:stream9
+
+RUN dnf update -y && \
+dnf install -y 'dnf-command(config-manager)'
+
+RUN  dnf config-manager --set-enabled crb
+
+RUN dnf copr enable -y rhcontainerbot/qm centos-stream-9-$(arch) && \
+dnf install -y epel-release
+
+RUN dnf install -y qm bluechi-ctl bluechi podman hostname crun fuse-overlayfs
+
+COPY files/ /
+
+RUN curl https://raw.githubusercontent.com/containers/qm/main/setup > /usr/share/qm/setup && \
+chmod + /usr/share/qm/setup
+
+RUN /usr/share/qm/setup --skip-systemctl --hostname localrootfs
+
+RUN systemctl enable bluechi-controller && \
+systemctl enable bluechi-agent
+
+ENTRYPOINT ["/sbin/init"]
