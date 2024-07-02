@@ -1,0 +1,36 @@
+all:
+  hosts:
+    my.server.com:
+
+  vars:
+    # build configuration
+    build_name: minimal
+    build_arch: x86_64 # x86_64,aarch64
+    build_target: qemu # run 'automotive-image-builder list-targets' for a list of build targets
+    build_mode: package # package,image
+    build_distro: autosd # run 'automotive-image-builder list-dist' for supported distributions
+    build_export: qcow2 # run 'automotive-image-builder list-exports' for a list of export formats
+    
+    # manifest file
+    build_manifest_template: minimal.mpp.yml
+
+    # manifest vars
+    mpp_vars:
+      guest_password: "topsecret"
+      guest_uid: 999
+      guest_gid: 999
+
+    # image-builder repo
+    image_builder_repo: "https://gitlab.com/CentOS/automotive/src/automotive-image-builder"
+    image_builder_branch: "main"
+
+    # where to store stuff needed for the build
+    image_builder_dir: "/home/workspace"
+
+    # clean-up before each build if set to 'true'
+    remove_builder_dir: true
+    remove_builder_output: true
+    
+    # ansible configuration
+    ansible_user: root
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa # private key used to access the remote server
