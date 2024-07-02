@@ -1,0 +1,6 @@
+- name: Prepare a baremetal server for osbuild
+  hosts: all
+
+  roles:
+    - role: roles/prepare_osbuild
+    - role: roles/build_image

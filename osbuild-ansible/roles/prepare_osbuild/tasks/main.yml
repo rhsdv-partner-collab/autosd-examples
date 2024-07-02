@@ -1,0 +1,25 @@
+- name: Enable the osbuild repos
+  shell: >
+    dnf -y copr enable @osbuild/osbuild-stable
+    
+    dnf -y copr enable @centos-automotive-sig/osbuild-auto
+
+- name: Install osbuild and related packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - osbuild
+      - osbuild-auto
+      - osbuild-ostree
+      - osbuild-tools
+
+- name: "Install (optional) packages"
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - podman
+      - git

@@ -1,0 +1,57 @@
+- name: Remove image_builder artifacts
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ image_builder_dir }}/tmp"
+    - "{{ image_builder_dir }}/{{ build_name }}"
+    - "{{ image_builder_dir }}/{{ build_name }}.json"
+  when: remove_builder_output
+  
+- name: Remove the image_builder directory
+  ansible.builtin.file:
+    path: "{{ image_builder_dir }}"
+    state: absent
+  when: remove_builder_dir
+
+- name: Clone the repo
+  ansible.builtin.git:
+    repo: "{{ image_builder_repo }}"
+    version: "{{ image_builder_branch }}"
+    dest: "{{ image_builder_dir }}/image_builder"
+    single_branch: yes
+  when: remove_builder_dir
+
+- name: Copy the build manifest
+  ansible.builtin.template:
+    src: "{{ build_manifest_template }}.j2"
+    dest: "{{ image_builder_dir }}/{{ build_manifest_template }}"
+    mode: 0644
+
+# automotive-image-builder compose --distro cs9 --mode package --target qemu my-image.mpp.yml osbuild.json
+- name: Compose the manifest
+  register: compose_results
+  ignore_errors: true
+  shell: |
+    ./automotive-image-builder compose \
+      --distro "{{ build_distro }}" \
+      --mode "{{ build_mode }}" \
+      --target "{{ build_target }}" \
+      "{{ image_builder_dir }}/{{ build_manifest_template }}" \
+      "{{ image_builder_dir }}/{{ build_name }}.json"
+  args:
+    chdir: "{{ image_builder_dir }}/image_builder"
+
+# osbuild --store osbuild_store --output-directory output --export qcow2 osbuild.json
+- name: Build the image
+  register: build_results
+  ignore_errors: true
+  shell: |
+    osbuild \
+      --store "{{ image_builder_dir }}/tmp" \
+      --output "{{ image_builder_dir }}/{{ build_name }}" \
+      --export "{{ build_export }}" \
+      "{{ image_builder_dir }}/{{ build_name }}.json"
+  args:
+    chdir: "{{ image_builder_dir }}/image_builder"
+
